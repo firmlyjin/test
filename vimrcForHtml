@@ -1,0 +1,105 @@
+" -----------------------------------------------------------------------------
+" 设置代码配色方案
+colorscheme Tomorrow-Night-Eighties               "终端配色方案
+"   colorscheme   wombat256mod
+"   colorscheme  solarized
+"
+syntax on
+if &term =~ "xterm"
+    if has("terminfo")
+        set t_Co=8
+        set t_Sf=^[[3%p1%dm
+        set t_Sb=^[[4%p1%dm
+    else
+        set t_Co=8
+        set t_Sf=^[[3%dm
+        set t_Sb=^[[4%dm
+    endif
+endif
+
+set ts=4 "设置Tab的大小是4
+set sw=4 "设置缩进大小是4
+set expandtab autoindent "换行时保持当前行的缩进
+"
+"  < Vundle 插件管理工具配置 >
+" -----------------------------------------------------------------------------
+" 用于更方便的管理vim插件，具体用法参考 :h vundle 帮助
+" 安装方法为在终端输入如下命令
+" git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+"  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+" 如果想在 windows 安装就必需先安装 "git for window"，可查阅网上资料
+" 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
+
+set nocompatible              " be iMproved, required禁用 Vi 兼容模式
+filetype off            "required禁用文件类型侦测
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" 使用Vundle来管理Vundle，这个必须要有。
+Plugin 'VundleVim/Vundle.vim'
+
+" 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
+Plugin 'mattn/emmet-vim' "zencoding
+Plugin 'hail2u/vim-css3-syntax'   "CSS语法高亮css style
+Plugin 'Raimondi/delimitMate'     "自动补全后大括号
+Plugin 'Valloric/YouCompleteMe'   "自动补全
+Plugin 'pangloss/vim-javascript'  "JavaScript 语法高亮
+Plugin 'marijnh/tern_for_vim'     "YouCompleteMe 加强版tern 补全JS代码
+Plugin 'Chiel92/vim-autoformat'   "调用外部命令行工具来格式化代码
+"Plugin 'scrooloose/syntastic'     "调用外部命令行工具来进行代码风格检查 代码风格检查工具
+Plugin 'Syntastic'
+"Plugin 'nvie/vim-flake8'
+Plugin 'scrooloose/nerdcommenter'     "\ccb注释\cu反注释
+
+
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+
+"=============================
+"YouCompleteMe会调用omnifunc来完成自动补全。 但对于CSS的自动补全有点麻烦，因为多数CSS的语法是上下文相关的，而YCM的自动补全触发器只考虑当前行。 补救办法是手动设置一下触发器.
+
+let g:ycm_semantic_triggers = {
+            \   'css': [ 're!^\s{4}', 're!:\s+'],
+            \   'html': [ '</' ],
+            \ }
+
+
+"=============================
+"vim-javascript 还支持高亮写在JavaScript中的CSS和HTML，在~/.vimrc中加入以下配置：
+
+let javascript_enable_domhtmlcss = 1
+
+
+"========= syntastic 插件的配置  ====================
+"将Eslint配置为javascript文件类型的checker：
+"let g:syntastic_javsacript_checkers = ['jslint']
+"let g:syntastic_javsacript_checkers = ['jshint']
+let g:syntastic_javsacript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'npm run eslint --'
+"let g:syntastic_debug = 3
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+"let g:syntastic_python_python_exec = '/usr/bin/python'
+let g:syntastic_python_checkers = ['grunt-pylint']
+
+
+"========= Autoformat ====================
+"运行 :Autoformat 即可格式化整个文件； 再次写入（:w）即可重新触发代码风格检查。这一流程可以在 ~/.vimrc 中设置一个快捷键：
+noremap <F3> :Autoformat<CR>:w<CR>
+
+" =============================================================================
+"                          << 复制、粘贴>>
+" =============================================================================
+imap <C-c> "+y 
+imap <C-v> "+p 
+
+
