@@ -141,6 +141,7 @@ export s174='-P27636 root@45.78.55.174'
 export s198=jin.zhongrun@192.168.0.198
 export s199=root@192.168.0.199
 export s199_laker=laker@192.168.0.199
+export s271=root@192.168.27.1
 export s272=root@192.168.27.2
 export s273=root@192.168.27.3
 export s274=root@192.168.27.4
