@@ -1,0 +1,117 @@
+" -----------------------------------------------------------------------------
+" 设置代码配色方案
+syntax on
+set t_Co=256
+set background=dark
+colorscheme Tomorrow-Night-Eighties               "终端配色方案
+"   colorscheme   wombat256mod
+"   colorscheme  solarized
+"
+"syntax on
+"if &term =~ "xterm"
+"    if has("terminfo")
+"        set t_Co=8
+"        set t_Sf=^[[3%p1%dm
+"        set t_Sb=^[[4%p1%dm
+"    else
+"        set t_Co=8
+"        set t_Sf=^[[3%dm
+"        set t_Sb=^[[4%dm
+"    endif
+"endif
+"
+set ts=4 "设置Tab的大小是4
+set sw=4 "设置缩进大小是4
+set expandtab autoindent "换行时保持当前行的缩进
+"
+"  < Vundle 插件管理工具配置 >
+" -----------------------------------------------------------------------------
+" 用于更方便的管理vim插件，具体用法参考 :h vundle 帮助
+" 安装方法为在终端输入如下命令
+" git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+"  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+" 如果想在 windows 安装就必需先安装 "git for window"，可查阅网上资料
+" 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
+
+set nocompatible              " be iMproved, required禁用 Vi 兼容模式
+filetype off            "required禁用文件类型侦测
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" 使用Vundle来管理Vundle，这个必须要有。
+Plugin 'VundleVim/Vundle.vim'
+
+" 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
+Plugin 'VimIM' 
+Plugin 'godlygeek/tabular'
+Plugin 'tpope/vim-markdown'
+
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+
+
+let javascript_enable_domhtmlcss = 1
+
+
+"========= syntastic 插件的配置  ====================
+"将Eslint配置python文件类型的checker：
+let g:syntastic_python_python_exec = '/usr/bin/py'
+let g:syntastic_python_checkers = ['pylint']
+
+
+"========= Autoformat ====================
+"运行 :Autoformat 即可格式化整个文件； 再次写入（:w）即可重新触发代码风格检查。这一流程可以在 ~/.vimrc 中设置一个快捷键：
+noremap <F3> :Autoformat<CR>:w<CR>
+
+" =============================================================================
+"                          << 复制、粘贴>>
+" =============================================================================
+imap <C-c> "+y 
+imap <C-v> "+p 
+
+" =============================================================================
+"                          << Table键补全>>
+" =============================================================================
+inoremap <tab> <c-r>=Smart_TabComplete()<CR>
+function! Smart_TabComplete()
+  let line = getline('.')                         " current line
+
+  let substr = strpart(line, -1, col('.')+1)      " from the start of the current
+                                                  " line to one character right
+                                                  " of the cursor
+  let substr = matchstr(substr, "[^ \t]*$")       " word till cursor
+  if (strlen(substr)==0)                          " nothing to match on empty string
+    return "\<tab>"
+  endif
+  let has_period = match(substr, '\.') != -1      " position of period, if any
+  let has_slash = match(substr, '\/') != -1       " position of slash, if any
+  if (!has_period && !has_slash)
+    return "\<C-X>\<C-P>"                         " existing text matching
+  elseif ( has_slash )
+    return "\<C-X>\<C-F>"                         " file matching
+  else
+    return "\<C-X>\<C-O>"                         " plugin matching
+  endif
+endfunction
+
+
+" =============================================================================
+"                          << 自定义字典补全>>
+" =============================================================================
+"autocmd BufNewFile,BufRead *.txt set filetype=txt
+"autocmd FileType txt set dictionary=~/.vim/dict/mybook.dict
+
+"在输入模式下，输入单词的一部分，再按下<Ctrl-X><Ctrl-K>，即可弹出自动补全选项，若有多个选项，可使用Ctrl-N及Ctrl-P上下选择。"如果觉得<Ctrl-X><Ctrl-K>组合键太麻烦，那么也可以直接将字典补全添加到默认补全列表中:
+"在输入模式下，输入单词的一部分，再按下<Ctrl-N>即可开始自动补全
+set complete-=k complete+=k 
+
+" =============================================================================
+"                          << VImIM 设置>>
+" =============================================================================
+let g:Vimim_cloud=-1  "关闭云
